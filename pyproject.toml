@@ -15,6 +15,7 @@ scikit-image = "^0.19.3"
 [tool.poetry.dev-dependencies]
 pylint = "^2.14.5"
 pytest = "^7.1.2"
+scriv = "^0.16.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
