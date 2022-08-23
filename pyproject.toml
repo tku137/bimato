@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bimato"
-version = "2022.1.1"
+version = "2022.1.2"
 description = "Bio Matrix Topology (BiMaTo) is a library containing all the biopolymer matrix topology analyses published by the Biological Physics Group, (BIP), Peter Debye Institute, University Leipzig, Germany."
 authors = ["Tony Fischer (tku137) <tonyfischer@mailbox.org>"]
 license = "GPL-3.0-or-later"
@@ -16,6 +16,7 @@ scikit-image = "^0.19.3"
 pylint = "^2.14.5"
 pytest = "^7.1.2"
 scriv = "^0.16.0"
+Sphinx = "^5.1.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
