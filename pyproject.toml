@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "Bio Matrix Topology"
+version = "2022.1"
+description = "A library containing all the biopolymer matrix topology analyses published by the Biological Physics Group, (BIP), Peter Debye Institute, University Leipzig, Germany."
+authors = ["Tony Fischer (tku137) <tonyfischer@mailbox.org>"]
+license = "GPLv3"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+numpy = "^1.23.2"
+scipy = "^1.9.0"
+pandas = "^1.4.3"
+scikit-image = "^0.19.3"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.14.5"
+pytest = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
