@@ -28,5 +28,13 @@ __status__ = "Development"
 __version__ = "2022.1"
 __credits__ = ["Tony Fischer (tku137)", "Alexander Hayn"]
 
+__all__ = ['core', 'poresize', 'network',
+           'get_binary', 'get_fiber_thickness', 'get_pore_sizes']
 
-from bimato.api import *
+
+from . import core
+from . import poresize
+from . import network
+
+from .core import get_binary
+from .poresize import get_fiber_thickness, get_pore_sizes
