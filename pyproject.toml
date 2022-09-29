@@ -17,6 +17,7 @@ pylint = "^2.14.5"
 pytest = "^7.1.2"
 scriv = "^0.16.0"
 Sphinx = "^5.1.1"
+readlif = "^0.6.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
