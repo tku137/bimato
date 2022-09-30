@@ -101,27 +101,9 @@ def get_binary(data, bw_closing_frac=1024, min_obj_frac=256, win_frac=8, thresh_
     return binary
 
 
-def get_edm(lif_stack, binary):
-    '''It takes a binary image and computes the Euclidean distance transform
-
-    Parameters
-    ----------
-    lif_stack
-        the lif file that you want to analyze
-    binary
-        a 3D array of booleans, where True indicates a voxel is part of the object
-
-    Returns
-    -------
-        The Euclidean Distance Map (EDM) is being returned.
-
-    '''
+def get_edm(binary, sampling):
     edm = edt(
         np.logical_not(binary),
-        sampling=[
-            float(lif_stack.info['PhysicalSizeX']),
-            float(lif_stack.info['PhysicalSizeY']),
-            float(lif_stack.info['PhysicalSizeZ'])
-        ]
+        sampling=[sampling['x'], sampling['y'], sampling['z']]
     )
     return edm

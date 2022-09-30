@@ -169,11 +169,8 @@ def calc_weighted_median(df, data_col, weight_col):
     return tmp_df[data_col][cumsum >= cutoff].iloc[0]
 
 
-def get_voxel_volume(lif_stack):
-    vx = float(lif_stack.info['PhysicalSizeX'])
-    vy = float(lif_stack.info['PhysicalSizeY'])
-    vz = float(lif_stack.info['PhysicalSizeZ'])
-    return vx * vy * vz
+def get_voxel_volume(sampling):
+    return sampling['x'] * sampling['y'] * sampling['z']
 
 
 # construct list of intervals as numpy array
@@ -181,10 +178,10 @@ def get_interval_list(part_size, number_parts):
     return [(np.array([0, 1]) + n) * part_size for n in range(number_parts)]
 
 
-def get_intervals(lif_stack, part_size):
+def get_intervals(data_shape, sampling, part_size_micron):
     # only depends on the part_size, the part numbers are calculated based on micron sizes
-    number_parts_x, number_parts_y, number_parts_z = get_possible_part_numbers(lif_stack, part_size)
-    part_size_x_px, part_size_y_px, part_size_z_px = get_part_size_px(lif_stack, number_parts_x, number_parts_y,
+    number_parts_x, number_parts_y, number_parts_z = get_possible_part_numbers(data_shape, sampling, part_size_micron)
+    part_size_x_px, part_size_y_px, part_size_z_px = get_part_size_px(data_shape, number_parts_x, number_parts_y,
                                                                       number_parts_z)
 
     intervals_x_px = get_interval_list(part_size_x_px, number_parts_x)
@@ -194,23 +191,23 @@ def get_intervals(lif_stack, part_size):
     return intervals_x_px, intervals_y_px, intervals_z_px
 
 
-def get_cube_size_in_micron(lif_stack):
-    sx = int(lif_stack.info['SizeX']) * float(lif_stack.info['PhysicalSizeX'])
-    sy = int(lif_stack.info['SizeY']) * float(lif_stack.info['PhysicalSizeY'])
-    sz = int(lif_stack.info['SizeZ']) * float(lif_stack.info['PhysicalSizeZ'])
+def get_cube_size_in_micron(data_shape, sampling):
+    sx = int(data_shape[0]) * float(sampling['x'])
+    sy = int(data_shape[1]) * float(sampling['y'])
+    sz = int(data_shape[2]) * float(sampling['z'])
     return sx, sy, sz
 
 
-def get_possible_part_numbers(lif_stack, part_size):
-    sx, sy, sz = get_cube_size_in_micron(lif_stack)
+def get_possible_part_numbers(data_shape, sampling, part_size):
+    sx, sy, sz = get_cube_size_in_micron(data_shape, sampling)
     nx = np.floor(sx / part_size).astype('int')
     ny = np.floor(sy / part_size).astype('int')
     nz = np.floor(sz / part_size).astype('int')
     return nx, ny, nz
 
 
-def get_part_size_px(lif_stack, nx, ny, nz):
-    px = np.floor(int(lif_stack.info['SizeX']) / nx).astype('int')
-    py = np.floor(int(lif_stack.info['SizeY']) / ny).astype('int')
-    pz = np.floor(int(lif_stack.info['SizeZ']) / nz).astype('int')
+def get_part_size_px(data_shape, nx, ny, nz):
+    px = np.floor(int(data_shape[0]) / nx).astype('int')
+    py = np.floor(int(data_shape[1]) / ny).astype('int')
+    pz = np.floor(int(data_shape[2]) / nz).astype('int')
     return px, py, pz

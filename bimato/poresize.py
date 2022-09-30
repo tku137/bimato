@@ -37,6 +37,7 @@ from skimage.morphology import ball
 import numpy as np
 import pandas as pd
 from .core import get_edm
+from .utils import get_voxel_volume, get_intervals
 
 
 def calc_free_pore_space(df):
@@ -58,23 +59,22 @@ def calc_free_pore_space(df):
     return sum_pore_vol / cube_vol
 
 
-def get_pore_sizes(lif_stack, binary, sigma_frac=128, residual_pore_detection=False):
-
+def get_pore_sizes(binary, sampling, sigma_frac=128, residual_pore_detection=False):
     # calc fluid phase volume
-    voxel_volume = float(lif_stack.info['PhysicalSizeX']) * float(lif_stack.info['PhysicalSizeY']) * float(
-        lif_stack.info['PhysicalSizeZ'])
-    # print(f"    voxel_volume={voxel_volume}")
+    voxel_volume = get_voxel_volume(sampling)
+    voxel_radius = np.cbrt((3*voxel_volume)/(4*np.pi))
 
     # calculate the EDM
     small_edge_size = np.min(binary.shape[:2])  # size of the smaller dim of an x-y image
     sigma = small_edge_size / sigma_frac
-    edm = get_edm(lif_stack, binary)
+    edm = get_edm(binary, sampling)  # edm has microns as values
 
     # get pore coordinates
     pore_coords = peak_local_max(gaussian(edm, sigma=sigma))
 
     # construct DataFrame with diameter and other infos
-    df_pores = pd.DataFrame(pore_coords, columns=['x [px]', 'y [px]', 'z [px]'])
+    df_pores = pd.DataFrame(pore_coords, columns=['x [px]', 'y [px]', 'z [px]'])  # coords are px coords!
+    # we take values from edm, so the result is microns again!
     df_pores['Diameter [µm]'] = edm[pore_coords[:, 0], pore_coords[:, 1], pore_coords[:, 2]] * 2  # Radius! So x2!
     # TODO: multi-degree
     df_pores['Residual Degree'] = 0
@@ -83,7 +83,7 @@ def get_pore_sizes(lif_stack, binary, sigma_frac=128, residual_pore_detection=Fa
 
     for _, pore in df_pores.iterrows():
         x, y, z, d, _ = pore.astype(np.int)  # need integers to index the array
-        r = int((d / 2) / float(lif_stack.info['PhysicalSizeX']))  # convert to pixel-radius
+        r = int((d / 2) / float(voxel_radius))  # convert to pixel-radius
 
         # construct coordinate arrays of a sphere at (x,y,z) with radius r
         pore_indices = np.argwhere(ball(r))
@@ -106,13 +106,14 @@ def get_pore_sizes(lif_stack, binary, sigma_frac=128, residual_pore_detection=Fa
         residual_fluid = binary + pore_stack
 
         # calculate the EDM
-        edm_residual = get_edm(lif_stack, residual_fluid)
+        edm_residual = get_edm(residual_fluid, sampling)  # edm has microns as values
 
         # get pore coordinates
         pore_coords_residual = peak_local_max(gaussian(edm_residual, sigma=sigma))
 
         # construct DataFrame with diameter and other infos
-        df_pores_residual = pd.DataFrame(pore_coords_residual, columns=['x [px]', 'y [px]', 'z [px]'])
+        df_pores_residual = pd.DataFrame(pore_coords_residual, columns=['x [px]', 'y [px]', 'z [px]'])  # coords are px!
+        # we take values from edm, so the result is microns again!
         df_pores_residual['Diameter [µm]'] = edm_residual[
                                                  pore_coords_residual[:, 0],
                                                  pore_coords_residual[:, 1],
@@ -122,7 +123,7 @@ def get_pore_sizes(lif_stack, binary, sigma_frac=128, residual_pore_detection=Fa
         # calc real pore volume
         for _, pore in df_pores_residual.iterrows():  # TODO: refactor to function
             x, y, z, d, _ = pore.astype(np.int)  # need integers to index the array
-            r = int((d / 2) / float(lif_stack.info['PhysicalSizeX']))  # convert to pixel-radius
+            r = int((d / 2) / float(voxel_radius))  # convert to pixel-radius
             pore_indices = np.argwhere(ball(r))
             pore_indices[:, 0] += x - r
             pore_indices[:, 1] += y - r
@@ -136,16 +137,13 @@ def get_pore_sizes(lif_stack, binary, sigma_frac=128, residual_pore_detection=Fa
 
     # parsed meta-data
     # TODO: meta-data in comment lines above DataFrame
-    df_pores['Sample Name'] = lif_stack.image_name
     size_x, size_y, size_z = binary.shape
     df_pores['Size x [px]'] = size_x
     df_pores['Size y [px]'] = size_y
     df_pores['Size z [px]'] = size_z
-    df_pores['PhysicalSize x'] = float(lif_stack.info['PhysicalSizeX'])
-    df_pores['PhysicalSize y'] = float(lif_stack.info['PhysicalSizeY'])
-    df_pores['PhysicalSize z'] = float(lif_stack.info['PhysicalSizeZ'])
-    df_pores['PhysicalSizeUnit (x,y,z)'] = str(
-        (lif_stack.info['PhysicalSizeXUnit'], lif_stack.info['PhysicalSizeYUnit'], lif_stack.info['PhysicalSizeZUnit']))
+    df_pores['PhysicalSize x'] = sampling['x']
+    df_pores['PhysicalSize y'] = sampling['y']
+    df_pores['PhysicalSize z'] = sampling['z']
 
     # number of pores
     df_pores["Number Of Pores"] = df_pores.shape[0]
@@ -184,26 +182,27 @@ def get_pore_sizes(lif_stack, binary, sigma_frac=128, residual_pore_detection=Fa
     return df_pores
 
 
-def get_fiber_thickness(lif_stack, binary, sigma_frac=512):
+def get_fiber_thickness(binary, sampling, sigma_frac=512):
 
     # calculate the EDM
     small_edge_size = np.min(binary.shape[:2])  # size of the smaller dim of an x-y image
     sigma = small_edge_size / sigma_frac
-    edm = get_edm(lif_stack, np.logical_not(binary))
+    edm = get_edm(np.logical_not(binary), sampling)  # edm has microns as values
 
     # get fiber coordinates
     fiber_coords = peak_local_max(gaussian(edm, sigma=sigma))
 
     # construct DataFrame with diameter and other infos
-    df_fibers = pd.DataFrame(fiber_coords, columns=['x [px]', 'y [px]', 'z [px]'])
+    df_fibers = pd.DataFrame(fiber_coords, columns=['x [px]', 'y [px]', 'z [px]'])  # coords are px!
+    # we take values from edm, so the result is microns again!
     df_fibers['Diameter [µm]'] = edm[fiber_coords[:, 0], fiber_coords[:, 1], fiber_coords[:, 2]] * 2  # Radius! So x2!
 
     return df_fibers
 
 
-def get_fragmented_poresize(lif_stack, binary, part_size_micron):
-    # voxel_volume = get_voxel_volume(lif_stack)
-    intervals_x, intervals_y, intervals_z = get_intervals(lif_stack, part_size_micron)
+def get_fragmented_poresize(binary, sampling, part_size_micron, residual_pore_detection=False, sigma_frac=128):
+    data_shape = binary.shape
+    intervals_x, intervals_y, intervals_z = get_intervals(data_shape, sampling, part_size_micron)
 
     df = list()
 
@@ -213,7 +212,7 @@ def get_fragmented_poresize(lif_stack, binary, part_size_micron):
         cube_slice = binary[ix[0]:ix[1], iy[0]:iy[1], iz[0]:iz[1]]
 
         # construct DataFrame with measures
-        tmp_df = get_pore_sizes(lif_stack, cube_slice)
+        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac, residual_pore_detection)
 
         tmp_df['ix_start'] = ix[0]
         tmp_df['ix_end'] = ix[1]
@@ -222,8 +221,6 @@ def get_fragmented_poresize(lif_stack, binary, part_size_micron):
         tmp_df['iz_start'] = iz[0]
         tmp_df['iz_end'] = iz[1]
         tmp_df['Slice ID'] = f"{ix[0]}-{ix[1]}_{iy[0]}-{iy[1]}_{iz[0]}-{iz[1]}"
-
-        tmp_df['Sample name'] = lif_stack.image_name
 
         # save data
         df.append(tmp_df)
