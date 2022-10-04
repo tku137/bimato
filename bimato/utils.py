@@ -34,24 +34,27 @@ import numpy as np
 from skimage.restoration import denoise_tv_chambolle
 
 
-def read_data(lif_stack):
-    """
-    Read image data from Leica lif file.
+def read_lif_image(lif_image):
+    '''It reads the image data from the readlif LifFile and returns it as a 3D numpy array
 
     Parameters
     ----------
-    lif_stack : LifImage
-        Instance of LeicaBioFormats.LifImage
+    lif_image : readlif.reader.LifFile
+        instance of readlif LifFile
 
     Returns
     -------
     numpy.ndarray
-        Image data in numerical form
+        A 3D numpy array of the image data.
 
-    """
-    # TODO: adapt readlif
-    z_size = int(lif_stack.info['SizeZ'])
-    data = lif_stack.read_image(z=(0, z_size)).squeeze()
+    '''
+
+    dims = lif_image.info['dims']
+
+    data = np.zeros((dims.y, dims.x, dims.z))
+    for z, im_plane in enumerate(lif_image.get_iter_z(t=0, c=0)):
+        data[..., z] = np.array(im_plane)
+
     return data
 
 
