@@ -12,11 +12,12 @@ scipy = "^1.9.0"
 pandas = "^1.4.3"
 scikit-image = "^0.19.3"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pylint = "^2.14.5"
 pytest = "^7.1.2"
 scriv = "^0.16.0"
 Sphinx = "^5.1.1"
+readlif = "^0.6.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
