@@ -23,13 +23,13 @@ docstring of module
 __author__ = "Tony Fischer (tku137)"
 __copyright__ = "Copyright 2022, Tony Fischer (tku137)"
 __license__ = "GPLv3"
-__email__ =  "tonyfischer@mailbox.org"
+__email__ = "tonyfischer@mailbox.org"
 __status__ = "Development"
 __version__ = "2022.1"
 __credits__ = ["Tony Fischer (tku137)", "Alexander Hayn"]
 
 
-from skimage.filters import threshold_local
+from skimage.filters import threshold_local  # pylint: disable=no-name-in-module
 from skimage.morphology import binary_closing, disk, ball, remove_small_objects
 from scipy.ndimage.morphology import distance_transform_edt as edt
 
