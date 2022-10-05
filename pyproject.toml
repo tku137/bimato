@@ -20,6 +20,7 @@ pytest = "^7.1.2"
 scriv = "^0.16.0"
 Sphinx = "^5.1.1"
 readlif = "^0.6.5"
+sphinx-rtd-theme = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

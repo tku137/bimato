@@ -12,6 +12,8 @@ Bio Matrix Topology (BiMaTo) is a library containing all the biopolymer matrix t
    :maxdepth: 2
    :caption: Contents:
 
+   user-guide
+   api
 
 
 Indices and tables
