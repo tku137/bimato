@@ -19,8 +19,8 @@ MOCK_MODULES = ['numpy', 'pandas', 'skimage']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
-sys.path.insert(0, os.path.abspath('.'))
-# sys.path.append(os.path.abspath('../..'))
+# sys.path.insert(0, os.path.abspath('.'))
+sys.path.append(os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
