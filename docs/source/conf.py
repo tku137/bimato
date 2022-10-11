@@ -15,7 +15,7 @@ import sys
 
 import mock
 
-MOCK_MODULES = ['numpy', 'pandas', 'skimage', 'skimage.filters']
+MOCK_MODULES = ['numpy', 'pandas', 'scikit-image', 'skimage', 'skimage.filters', 'skimage.morphology']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
