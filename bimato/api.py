@@ -15,15 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Bio Matrix Topology (BiMaTo).  If not, see <http://www.gnu.org/licenses/>.
 
-'''The module :mod:`bimato` is the top-level namespace. It contains the following sub-modules:
-
-- :mod:`bimato.core`: fundamental functions to the bimato project, mainly the custom binarization
-- :mod:`bimato.poresize`: pore-size algorithm published at https://www.nature.com/articles/s41598-019-44764-5
-- :mod:`bimato.network`: algorithms to analyze the network structure
-- :mod:`bimato.utils`: various statistical and other utility functions
-
-See documentation for a general user guide.
-'''
+"""
+docstring of module
+"""
 
 
 __author__ = "Tony Fischer (tku137)"
@@ -34,5 +28,14 @@ __status__ = "Development"
 __version__ = "2022.1"
 __credits__ = ["Tony Fischer (tku137)", "Alexander Hayn"]
 
+__all__ = ['core', 'poresize', 'network', 'utils',
+           'get_binary', 'get_fiber_thickness', 'get_pore_sizes']
 
-from bimato.api import *  # noqa: F401,F403
+
+from . import core
+from . import poresize
+from . import network
+from . import utils
+
+from .core import get_binary
+from .poresize import get_fiber_thickness, get_pore_sizes
