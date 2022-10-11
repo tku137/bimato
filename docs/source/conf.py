@@ -59,11 +59,11 @@ todo_include_todos = True
 
 # Example configuration for intersphinx: refer to the Python standard library.
 # intersphinx_mapping = {'https://docs.python.org/': None}
-# intersphinx_mapping = {'python'    : ('http://docs.python.org/3', None),
-#                        'numpy'     : ('http://docs.scipy.org/doc/numpy/', None),
-#                        'scipy'     : ('http://docs.scipy.org/doc/scipy/reference/', None),
-#                        'pandas'    : ('http://pandas-docs.github.io/pandas-docs-travis/', None),
-#                        'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
+intersphinx_mapping = {'python'    : ('http://docs.python.org/3', None),
+                       'numpy'     : ('http://docs.scipy.org/doc/numpy/', None),
+                       'scipy'     : ('http://docs.scipy.org/doc/scipy/reference/', None),
+                       'pandas'    : ('https://pandas.pydata.org/docs/', None),
+                       'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
 
 
 # -- Options for HTML output -------------------------------------------------

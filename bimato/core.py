@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Bio Matrix Topology (BiMaTo).  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-docstring of module
-"""
+'''The module :mod:`bimato.core` contains some fundamental functions for the `bimato` project. Mainly it contains the
+custom binarization technique tailored towards 3D biompolymer network images and others.
+
+See documentation for a general user guide.
+'''
 
 
 __author__ = "Tony Fischer (tku137)"
@@ -37,8 +39,7 @@ import numpy as np
 
 
 def get_binary(data, bw_closing_frac=1024, min_obj_frac=256, win_frac=8, thresh_shift_percentage=0.01, morph_3d=True):
-    """
-    Function to get a segmentation of input biopolymer network image data. Parameters are optional, but should be
+    '''Function to get a segmentation of input biopolymer network image data. Parameters are optional, but should be
     considered. Optimal values can vary for drastically differing image data.
 
     Notes
@@ -66,7 +67,7 @@ def get_binary(data, bw_closing_frac=1024, min_obj_frac=256, win_frac=8, thresh_
     numpy.ndarray
         Binary segmentation output
 
-    """
+    '''
 
     # calc the threshold shift
     thresh_shift = thresh_shift_percentage * data.max()
@@ -102,6 +103,21 @@ def get_binary(data, bw_closing_frac=1024, min_obj_frac=256, win_frac=8, thresh_
 
 
 def get_edm(binary, sampling):
+    '''It takes a binary image and a dictionary of sampling rates and returns the Euclidean distance map
+
+    Parameters
+    ----------
+    binary : numpy.ndarray
+        a 3D binary array
+    sampling : dict
+        a dictionary with keys 'x', 'y', and 'z' that contain the voxel size in each dimension
+
+    Returns
+    -------
+    numpy.ndarray
+        The Euclidean distance map (EDM) of the binary image.
+
+    '''
     edm = edt(
         np.logical_not(binary),
         sampling=[sampling['x'], sampling['y'], sampling['z']]

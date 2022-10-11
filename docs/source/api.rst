@@ -20,18 +20,18 @@ bimato.core module
    :undoc-members:
    :show-inheritance:
 
-bimato.network module
-~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: bimato.network
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 bimato.poresize module
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bimato.poresize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+bimato.network module
+~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: bimato.network
    :members:
    :undoc-members:
    :show-inheritance:
