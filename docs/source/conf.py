@@ -12,10 +12,9 @@
 #
 import os
 import sys
-from bimato import __version__
 
 sys.path.insert(0, os.path.abspath('.'))
-
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 # -- Project information -----------------------------------------------------
 
@@ -24,7 +23,7 @@ copyright = '2022, Tony Fischer (tku137)'
 author = 'Tony Fischer (tku137)'
 
 # The full version, including alpha/beta/rc tags
-release = __version__
+release = "2022.1"
 
 
 # -- General configuration ---------------------------------------------------
