@@ -12,10 +12,15 @@
 #
 import os
 import sys
-from bimato import __version__
 
-sys.path.insert(0, os.path.abspath('.'))
+import mock
 
+MOCK_MODULES = ['numpy', 'pandas', 'scikit-image']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
+
+# sys.path.insert(0, os.path.abspath('.'))
+sys.path.append(os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
@@ -24,7 +29,7 @@ copyright = '2022, Tony Fischer (tku137)'
 author = 'Tony Fischer (tku137)'
 
 # The full version, including alpha/beta/rc tags
-release = __version__
+release = "2022.1"
 
 
 # -- General configuration ---------------------------------------------------
