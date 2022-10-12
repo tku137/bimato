@@ -4,6 +4,11 @@ version = "2022.1"
 description = "Bio Matrix Topology (BiMaTo) is a library containing all the biopolymer matrix topology analyses published by the Biological Physics Group, (BIP), Peter Debye Institute, University Leipzig, Germany."
 authors = ["Tony Fischer (tku137) <tonyfischer@mailbox.org>"]
 license = "GPL-3.0-or-later"
+readme = "README.rst"
+homepage = "https://www.physgeo.uni-leipzig.de/en/pdi/biological-physics"
+repository = "https://github.com/tku137/bimato"
+documentation = "https://bimato.readthedocs.io/"
+keywords = ["biophysics", "biomaterials", "poresize"]
 
 [tool.poetry.dependencies]
 python = "~3.10"
