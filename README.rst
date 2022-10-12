@@ -1,12 +1,10 @@
 BiMaTo
 ======
 
-|DOI|
+|DOI| |PyPI version shields.io|
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.1038/s41598-019-44764-5.svg
    :target: https://doi.org/10.1038/s41598-019-44764-5
-
-|PyPI version shields.io|
 
 .. |PyPI version shields.io| image:: https://img.shields.io/pypi/v/bimato.svg
    :target: https://pypi.python.org/pypi/bimato/
