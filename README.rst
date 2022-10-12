@@ -1,13 +1,19 @@
 BiMaTo
 ======
 
-|DOI| |PyPI version shields.io|
+|DOI| |GPLv3 license| |PyPI version shields.io| |Documentation Status|
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.1038/s41598-019-44764-5.svg
    :target: https://doi.org/10.1038/s41598-019-44764-5
 
 .. |PyPI version shields.io| image:: https://img.shields.io/pypi/v/bimato.svg
    :target: https://pypi.python.org/pypi/bimato/
+
+.. |GPLv3 license| image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+   :target: http://perso.crans.org/besson/LICENSE.html
+
+.. |Documentation Status| image:: https://readthedocs.org/projects/bimato/badge/?version=latest
+   :target: http://bimato.readthedocs.io/?badge=latest
 
 Bio Matrix Topology (BiMaTo) is a library containing all the biopolymer matrix topology analyses published by the Biological Physics Group, (BIP), Peter Debye Institute, University Leipzig, Germany.
 
