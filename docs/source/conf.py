@@ -13,13 +13,14 @@
 import os
 import sys
 
-import mock
+# import mock
 
-MOCK_MODULES = ['numpy', 'pandas', 'scikit-image']
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
+# MOCK_MODULES = ['numpy', 'pandas', 'scikit-image']
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = mock.Mock()
 
 # sys.path.insert(0, os.path.abspath('.'))
+# If you have setup your sphinx project to use separate build and source directories, that call should instead be
 sys.path.append(os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
@@ -70,6 +71,11 @@ intersphinx_mapping = {'python'    : ('http://docs.python.org/3', None),
                        'pandas'    : ('https://pandas.pydata.org/docs/', None),
                        'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
 
+autodoc_mock_imports = [
+    "numpy", "pandas", "scikit-image",
+    "skimage", "skimage.filters",
+    "scipy", "scipy.ndimage", "scipy.ndimage.morphology"
+    ]
 
 # -- Options for HTML output -------------------------------------------------
 

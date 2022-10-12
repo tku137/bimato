@@ -7,7 +7,6 @@ Module contents
 .. automodule:: bimato
    :members:
    :undoc-members:
-   :show-inheritance:
 
 Submodules
 ----------
@@ -18,7 +17,6 @@ bimato.core module
 .. automodule:: bimato.core
    :members:
    :undoc-members:
-   :show-inheritance:
 
 bimato.poresize module
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +24,6 @@ bimato.poresize module
 .. automodule:: bimato.poresize
    :members:
    :undoc-members:
-   :show-inheritance:
 
 bimato.network module
 ~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +31,6 @@ bimato.network module
 .. automodule:: bimato.network
    :members:
    :undoc-members:
-   :show-inheritance:
 
 bimato.utils module
 ~~~~~~~~~~~~~~~~~~~
@@ -42,5 +38,4 @@ bimato.utils module
 .. automodule:: bimato.utils
    :members:
    :undoc-members:
-   :show-inheritance:
 
