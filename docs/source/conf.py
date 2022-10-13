@@ -30,7 +30,7 @@ copyright = '2022, Tony Fischer (tku137)'
 author = 'Tony Fischer (tku137)'
 
 # The full version, including alpha/beta/rc tags
-release = "2022.1.1"
+release = "2022.1.2"
 
 
 # -- General configuration ---------------------------------------------------
