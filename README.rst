@@ -19,6 +19,13 @@ Bio Matrix Topology (BiMaTo) is a library containing all the biopolymer matrix t
 
 Documentation can be found `here <https://bimato.readthedocs.io/>`__.
 
+How to install
+--------------
+
+**bimato** uses Python3.8 and up. Installation is trivial::
+
+    pip install bimato
+
 Exemplary analysis workflow
 ---------------------------
 
@@ -74,6 +81,11 @@ Resulting in the following plot:
   :width: 200
   :align: center
   :alt: boxplot of poresize between two differently concengtrated collagen matrices
+
+How to cite
+-----------
+
+Fischer T, Hayn A, Mierke CT (2019) Fast and reliable advanced two-step pore-size analysis of biomimetic 3D extracellular matrix scaffolds. Scientific Reports 9:8352. https://doi.org/10.1038/s41598-019-44764-5
 
 
 .. _article: https://www.nature.com/articles/s41598-019-44764-5
