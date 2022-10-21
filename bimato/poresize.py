@@ -259,20 +259,21 @@ def get_fiber_thickness(binary, sampling, sigma_frac=512):
     return df_fibers
 
 
-def get_fragmented_poresize(binary, sampling, part_size_micron, residual_pore_detection=False, sigma_frac=128):
+def get_fragmented_poresize(binary, sampling, part_size_micron):
     data_shape = binary.shape
     intervals_x, intervals_y, intervals_z = get_intervals(data_shape, sampling, part_size_micron)
 
     df = list()
-
     for ix, iy, iz in product(intervals_x, intervals_y, intervals_z):
         # each interval (ix...) contains start and stop indices of the respective slice interval
-        # cube[ interval[start] : interval[end], ... ) is the correct thing
+
+        # query data with coordinates in specified intervals, represents slice of image cube
         cube_slice = binary[ix[0]:ix[1], iy[0]:iy[1], iz[0]:iz[1]]
 
         # construct DataFrame with measures
-        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac, residual_pore_detection)
+        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac=128, residual_pore_detection=False)
 
+        # store metadata of slice
         tmp_df['ix_start'] = ix[0]
         tmp_df['ix_end'] = ix[1]
         tmp_df['iy_start'] = iy[0]
@@ -286,4 +287,25 @@ def get_fragmented_poresize(binary, sampling, part_size_micron, residual_pore_de
 
     df = pd.concat(df, axis=0, ignore_index=True)
 
+    df = get_part_amount(df)
+
     return df
+
+
+def get_part_amount(df):
+    tmp_df = df.copy()
+    tmp_df.loc[:, "Relative Number Of Pores"] = tmp_df.loc[:, "Number Of Pores"] / tmp_df["Number Of Pores"].sum()
+    tmp_df.loc[:, "Relative Real Pore Volume"] = tmp_df.loc[:, "Real Pore Volume [µm³]"] / tmp_df["Real Pore Volume [µm³]"].sum()
+    tmp_df.loc[:, "Relative Collagen Volume"] = tmp_df.loc[:, "Collagen Volume [µm³]"] / tmp_df["Collagen Volume [µm³]"].sum()
+    tmp_df.loc[:, "Relative Diameter"] = tmp_df.loc[:, "Diameter [µm]"] / tmp_df["Diameter [µm]"].sum()
+    return tmp_df
+
+
+def calc_inhomogeneity(df):
+    std_df = df.loc[:, ['Relative Number Of Pores', 'Relative Collagen Volume', 'Relative Diameter']].std()
+    inhomogeneity = np.sqrt(
+        std_df['Relative Number Of Pores'] ** 2 +
+        std_df['Relative Collagen Volume'] ** 2 +
+        std_df['Relative Diameter'] ** 2
+    )
+    return inhomogeneity
