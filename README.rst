@@ -141,6 +141,6 @@ Resulting in the following plot:
 How to cite
 -----------
 
-Fischer T, Hayn A, Mierke CT (2019) Fast and reliable advanced two-step pore-size analysis of biomimetic 3D extracellular matrix scaffolds. Scientific Reports 9:8352. https://doi.org/10.1038/s41598-019-44764-5
-Hayn A, Fischer T, Mierke CT (2020) Inhomogeneities in 3D Collagen Matrices Impact Matrix Mechanics and Cancer Cell Migration. Front Cell Dev Biol 8:593879. https://doi.org/10.3389/fcell.2020.593879
+- Fischer T, Hayn A, Mierke CT (2019) Fast and reliable advanced two-step pore-size analysis of biomimetic 3D extracellular matrix scaffolds. Scientific Reports 9:8352. https://doi.org/10.1038/s41598-019-44764-5
+- Hayn A, Fischer T, Mierke CT (2020) Inhomogeneities in 3D Collagen Matrices Impact Matrix Mechanics and Cancer Cell Migration. Front Cell Dev Biol 8:593879. https://doi.org/10.3389/fcell.2020.593879
 
