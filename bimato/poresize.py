@@ -28,7 +28,7 @@ __copyright__ = "Copyright 2022, Tony Fischer (tku137)"
 __license__ = "GPLv3"
 __email__ = "tonyfischer@mailbox.org"
 __status__ = "Development"
-__version__ = "2022.1.2"
+__version__ = "2022.2"
 __credits__ = ["Tony Fischer (tku137)", "Alexander Hayn"]
 
 
@@ -259,20 +259,49 @@ def get_fiber_thickness(binary, sampling, sigma_frac=512):
     return df_fibers
 
 
-def get_fragmented_poresize(binary, sampling, part_size_micron, residual_pore_detection=False, sigma_frac=128):
+def get_fragmented_poresizes(binary, sampling, part_size_micron, residual_pore_detection=False):
+    """Calculates fragmented pore-sizes of a sample, given the desired part size.
+
+    First, based on the given part size, the possible number of parts and their respective coordinate intervals are
+    determined. Using the previous coordinate intervals, the binary segmentation of the original sample is split into
+    multiple smaller samples and pore size calculations and statistics are calculated for each individual part. This
+    is the basis for further inhomogeneity analyses, as described at
+    https://www.frontiersin.org/articles/10.3389/fcell.2020.593879/.
+
+    The resulting :class:`pandas.DataFrame` contains mainly the same columns as desccribed in :func:`bimato.poresize.get_pore_sizes`.
+    However, it is extended by several columns containing the start and end coordinates of each part inside the original
+    data, a unique slice-ID which can be used for example in :func:`pandas.DataFrame.groupby`, and several other data
+    columns that are neccessary to calculate the inhomogeneity using :func:`bimato.poresize.calc_inhomogeneity`.
+
+    Parameters
+    ----------
+    binary
+        The binary image containing the segmentation of fluid (=0) and polymer phase (=1)
+    sampling
+        The physical size of each voxel in the image
+    part_size_micron
+        Desired size of a single part in microns
+    residual_pore_detection
+        If True, the algorithm will try to detect even smaller and obscure pores
+
+    Returns
+    -------
+        DataFrame with dedicated pore sizes and statistics for individual parts of the original sample
+    """
     data_shape = binary.shape
     intervals_x, intervals_y, intervals_z = get_intervals(data_shape, sampling, part_size_micron)
 
     df = list()
-
     for ix, iy, iz in product(intervals_x, intervals_y, intervals_z):
         # each interval (ix...) contains start and stop indices of the respective slice interval
-        # cube[ interval[start] : interval[end], ... ) is the correct thing
+
+        # query data with coordinates in specified intervals, represents slice of image cube
         cube_slice = binary[ix[0]:ix[1], iy[0]:iy[1], iz[0]:iz[1]]
 
         # construct DataFrame with measures
-        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac, residual_pore_detection)
+        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac=128, residual_pore_detection=residual_pore_detection)
 
+        # store metadata of slice
         tmp_df['ix_start'] = ix[0]
         tmp_df['ix_end'] = ix[1]
         tmp_df['iy_start'] = iy[0]
@@ -286,4 +315,57 @@ def get_fragmented_poresize(binary, sampling, part_size_micron, residual_pore_de
 
     df = pd.concat(df, axis=0, ignore_index=True)
 
+    df = get_part_amount(df)
+
     return df
+
+
+def get_part_amount(df):
+    """Integral part of :func:`bimato.poresize.get_fragmented_poresizes`. Calculates specific parameters about the
+    collagen content and pore sizes of each fragment.
+
+
+    Parameters
+    ----------
+    df
+        DataFrame with pore sizes
+
+    Returns
+    -------
+        Extended DataFrame with specific parameters fundamental to the inhomogeneity calculation
+    """
+    tmp_df = df.copy()
+    tmp_df.loc[:, "Relative Number Of Pores"] = tmp_df.loc[:, "Number Of Pores"] / tmp_df["Number Of Pores"].sum()
+    tmp_df.loc[:, "Relative Real Pore Volume"] = tmp_df.loc[:, "Real Pore Volume [µm³]"] / tmp_df["Real Pore Volume [µm³]"].sum()
+    tmp_df.loc[:, "Relative Collagen Volume"] = tmp_df.loc[:, "Collagen Volume [µm³]"] / tmp_df["Collagen Volume [µm³]"].sum()
+    tmp_df.loc[:, "Relative Diameter"] = tmp_df.loc[:, "Diameter [µm]"] / tmp_df["Diameter [µm]"].sum()
+    return tmp_df
+
+
+def calc_inhomogeneity(df):
+    """Calculates the inhomogeneity parameter based on sophisticated statistics and parameters, as described at
+    https://www.frontiersin.org/articles/10.3389/fcell.2020.593879/. Takes a :class:`pandas.DataFrame` that has been
+    extended by :func:`bimato.poresize.get_fragmented_poresizes` and returns the inhomogeneity parameter of that
+    DataFrame.
+
+    Note
+    ----
+    This function is especially useful when combined with :func:`pandas.DataFrame.groupby` and
+    :func:`pandas.core.groupby.GroupBy.apply` operations. See :doc:`user-guide` for more information.
+
+    Parameters
+    ----------
+    df
+        pandas.DataFrame with specific parameters calculated by :func:`bimato.poresize.get_fragmented_poresizes`
+
+    Returns
+    -------
+        Inhomogeneity parameter
+    """
+    std_df = df.loc[:, ['Relative Number Of Pores', 'Relative Collagen Volume', 'Relative Diameter']].std()
+    inhomogeneity = np.sqrt(
+        std_df['Relative Number Of Pores'] ** 2 +
+        std_df['Relative Collagen Volume'] ** 2 +
+        std_df['Relative Diameter'] ** 2
+    )
+    return inhomogeneity
