@@ -271,7 +271,7 @@ def get_fragmented_poresize(binary, sampling, part_size_micron):
         cube_slice = binary[ix[0]:ix[1], iy[0]:iy[1], iz[0]:iz[1]]
 
         # construct DataFrame with measures
-        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac=128, residual_pore_detection=False)
+        tmp_df = get_pore_sizes(cube_slice, sampling, sigma_frac=128, residual_pore_detection=residual_pore_detection)
 
         # store metadata of slice
         tmp_df['ix_start'] = ix[0]
