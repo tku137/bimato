@@ -25,7 +25,7 @@ __copyright__ = "Copyright 2022, Tony Fischer (tku137)"
 __license__ = "GPLv3"
 __email__ = "tonyfischer@mailbox.org"
 __status__ = "Development"
-__version__ = "2022.1.2"
+__version__ = "2022.2"
 __credits__ = ["Tony Fischer (tku137)", "Alexander Hayn"]
 
 __all__ = ['core', 'poresize', 'network', 'utils',
